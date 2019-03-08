@@ -8,30 +8,24 @@ package lms.book;
 import javax.swing.table.AbstractTableModel;
 
 public class LibTableModel extends AbstractTableModel {
-   String[] columnTitle = { "도서번호", "도서명", "출판사", "저자", "대출일", "반납일"};
-   //Object[][] data;
+	String[] columnTitle = { "도서번호", "장르", "도서명", "출판사", "저자"};
+	// Object[][] data;
+	Object[][] data_lib = {};
 
-   public int getColumnCount() {
-      return columnTitle.length;
-   }
+	public int getColumnCount() {
+		return columnTitle.length;
+	}
 
-   
-   public String getColumnName(int col) {
-      return columnTitle[col];
-   }
+	public int getRowCount() {
+		return data_lib.length;
+	}
 
+	public String getColumnName(int col) {
+		return columnTitle[col];
+	}
 
-   @Override
-   public int getRowCount() {
-      // TODO Auto-generated method stub
-      return 2;
-   }
-
-
-   @Override
-   public Object getValueAt(int arg0, int arg1) {
-      // TODO Auto-generated method stub
-      return null;
-   }
+	public Object getValueAt(int row, int col) {
+		return data_lib[row][col];
+	}
 
 }

@@ -1,4 +1,4 @@
-package lms;
+package lms.member;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
@@ -38,7 +38,7 @@ public class RegistDialog extends JDialog{
 	Dimension d_label = new Dimension(110, 25);
 	Dimension d_text = new Dimension(150, 25);
 	Dimension d_ch = new Dimension(70, 25);
-	LoginDialog parent;
+	MemberContents parent;
 	GregorianCalendar calendar = new GregorianCalendar(Locale.KOREA);
 
 	public RegistDialog(Component parent) {
@@ -46,7 +46,7 @@ public class RegistDialog extends JDialog{
 		p_label = new JPanel();
 		p_edit = new JPanel();
 		p_bt = new JPanel();
-		this.parent = (LoginDialog)parent;
+		this.parent = (MemberContents)parent;
 		bt_ok = new JButton("가입");
 		bt_cancel = new JButton("취소");
 		p_main.setLayout(new BorderLayout());
@@ -169,6 +169,7 @@ public class RegistDialog extends JDialog{
 				ch_month.addItem(Integer.toString(i));
 			}
 		}
+		setDateChoice(calendar.getWeekYear(), 0);	//이거 왜 작동 안하지
 		ch_year.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				int month = Integer.parseInt(ch_month.getSelectedItem());
@@ -281,26 +282,22 @@ public class RegistDialog extends JDialog{
 		ResultSet rs = null;
 		PreparedStatement pstmt = null;
 		Boolean b = false;
-		if(user_id.length()>5) {
-			sb.append("select MEM_ID from lib_member");
-			sb.append(" where MEM_ID='"+user_id+"'");
-			try {
-				pstmt = parent.conn.prepareStatement(sb.toString(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-				rs = pstmt.executeQuery();
-				rs.last();
-				if(rs.getRow()==0) {
-					b = true;
-				}else {
-					b = false;
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				parent.main.db.disconnect(pstmt, rs);
+		sb.append("select MEM_ID from lib_member");
+		sb.append(" where MEM_ID='"+user_id+"'");
+		try {
+			pstmt = parent.con.prepareStatement(sb.toString(), ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			rs = pstmt.executeQuery();
+			rs.last();
+			if(rs.getRow()==0) {
+				b = true;
+			}else {
+				b = false;
 			}
-		}else {
-			JOptionPane.showMessageDialog(null, "최소 6자 이상의 아이디를 입력하세요.");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			parent.connectionManager.disconnect(pstmt, rs);
 		}
 		return b;
 	}
@@ -343,11 +340,11 @@ public class RegistDialog extends JDialog{
 		PreparedStatement pstmt = null;
 		StringBuffer sb = new StringBuffer();
 		sb.append("insert into lib_member(mem_id, mem_password, mem_name, mem_state, mem_birth, mem_phone, mem_addr, mem_email, mem_regist_date)");
-		sb.append(" values('"+regist_infor[0]+"', '"+regist_infor[1]+"', '"+regist_infor[2]+"', 5, '"+regist_infor[3]+"', '"+regist_infor[4]+"', '"+regist_infor[5]+"', '"+regist_infor[6]+"', TO_CHAR(SYSDATE, 'YYYYMMDD'))");
+		sb.append(" values('"+regist_infor[0]+"', '"+regist_infor[1]+"', '"+regist_infor[2]+"', 1, '"+regist_infor[3]+"', '"+regist_infor[4]+"', '"+regist_infor[5]+"', '"+regist_infor[6]+"', TO_CHAR(SYSDATE, 'YYYYMMDD'))");
 		System.out.println(sb.toString());
 		try {
 			System.out.println(sb.toString());
-			pstmt = parent.conn.prepareStatement(sb.toString());
+			pstmt = parent.con.prepareStatement(sb.toString());
 			int result = pstmt.executeUpdate();
 			if(result != 0) {
 				dispose();
@@ -360,7 +357,7 @@ public class RegistDialog extends JDialog{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			parent.main.db.disconnect(pstmt);
+			parent.connectionManager.disconnect(pstmt);
 		}
 	}
 }

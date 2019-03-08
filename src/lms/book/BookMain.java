@@ -6,14 +6,21 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import lms.db.ConnectionManager;
 
 public class BookMain extends JPanel {
 	JPanel p_north = new JPanel();
 	JPanel p_center = new JPanel();
 	JButton bt_loan, bt_Re;
+
+	private Connection con;
+	ConnectionManager connectionManager;
+
 	JPanel[] pages = new JPanel[2];
 
 	public BookMain() {
@@ -30,31 +37,39 @@ public class BookMain extends JPanel {
 		bt_Re.setContentAreaFilled(false);
 
 		p_north.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
-		
+		// p_west.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 10));
+		// p_east.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
 		p_north.add(bt_loan);
 		p_north.add(bt_Re);
-		pages[0] = new Loan();
-		pages[1] = new Return();
-		setPages();
+		connectionManager = new ConnectionManager();
+		// db 접속하기
+		con = connectionManager.getConn(); // 패널들을 new 하기 전에 db연동이 이미 되어있음!!
+		pages[0] = new Loan(this);
+		pages[1] = new Return(this);
+		showPages(0);
+		setPages(0);
 		bt_loan.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				showPages(0);
+				setPages(0);
 			}
 		});
 
 		bt_Re.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				showPages(1);
+				setPages(1);
 			}
 		});
+		this.setLayout(new BorderLayout());
 		add(p_north, BorderLayout.NORTH);
 		add(p_center);
+
 	}
 
-	public void setPages() {
-		for (int i = 0; i < pages.length; i++) {
+	public void setPages(int i) {
 			p_center.add(pages[i]);
-		}
 	}
 
 	public void showPages(int index) {
@@ -66,4 +81,9 @@ public class BookMain extends JPanel {
 			}
 		}
 	}
+
+	public Connection getCon() {
+		return con;
+	}
+
 }
