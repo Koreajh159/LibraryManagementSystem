@@ -8,29 +8,18 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import lms.MainFrame;
-
 public class BookManagement extends JPanel{
-	public static final int BOOK_LIST_TAB = 3;
-	public static final int LOST_BOOK_TAB = 4;
-	public static final int REQUEST_BOOK_TAB = 5;
-	public static final int PURCHASE_BOOK_TAB = 6;
-	
 	JPanel p_center;
 	JPanel p_north;
 	JButton bt_list;
 	JButton bt_lost;
 	JButton bt_request;
 	JButton bt_buy;
-	MainFrame main;
-	BookLost lost;
-	
 	
 	Dimension d1 = new Dimension(1200,50);
 	Dimension d2 = new Dimension(550,500);
@@ -42,14 +31,11 @@ public class BookManagement extends JPanel{
 	
 	ArrayList<JButton> buttonList = new ArrayList<JButton>();
 	
-	public BookManagement(MainFrame main) {
-
-		this.main = main;
-		main.getConn();
+	public BookManagement() {
 		Font font = new Font("HY엽서L", Font.BOLD, 14);
 		create();
 		setLayout(new BorderLayout());
-		//붙이기	
+		//붙이기
 		add(p_north,BorderLayout.NORTH);
 		add(p_center);
 		
@@ -63,10 +49,7 @@ public class BookManagement extends JPanel{
 		buttonList.add(bt_request);
 		buttonList.add(bt_buy);
 		
-		bt_buy.setContentAreaFilled(false);
-		bt_list.setContentAreaFilled(false);
-		bt_lost.setContentAreaFilled(false);
-		bt_request.setContentAreaFilled(false);
+		
 		
 		p_north.add(bt_list);
 		bt_list.setPreferredSize(d_bt);
@@ -99,7 +82,6 @@ public class BookManagement extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				showPage(1);
 				btBackground(1);
-				getSelectAll();
 				
 			}
 		});
@@ -125,7 +107,6 @@ public class BookManagement extends JPanel{
 	
 	}
 	public void create() {
-
 		p_north = new JPanel();
 		p_center = new JPanel();
 		bt_list = new JButton("도서 목록");
@@ -133,14 +114,10 @@ public class BookManagement extends JPanel{
 		bt_request = new JButton("요청 도서");
 		bt_buy= new JButton("구매도서");
 
-		pages[0] = new BookList(main);
-		pages[1] = new BookLost(main);
-		pages[2] = new BookRequest(main);
+		pages[0] = new BookList();
+		pages[1] = new BookLost();
+		pages[2] = new BookRequest();
 		pages[3] = new BookBuy();
-	}
-	public void getSelectAll() {
-		lost = new BookLost(main);
-		lost.selectAll(0, 2);
 	}
 	public void showPage(int page) {
 		for (int i = 0; i < pages.length; i++) {
@@ -152,7 +129,6 @@ public class BookManagement extends JPanel{
 			}
 		}
 	}
-	
 	public void FontChange(Component component, Font font) {
 		component.setFont(font);
 		if(component instanceof Container) {
